@@ -1,0 +1,53 @@
+library(dplyr)
+library(ggplot2)
+library(ggridges)
+library(readxl)
+
+Symptom_Breakdown <- read_excel("C:/Users/Prameela Boorada/Downloads/Symptom Breakdown.xlsx")
+symptom <- Symptom_Breakdown
+View(symptom)
+
+#Combining dysfunction vs anxiety level onto one table
+df1 <- data.frame(symptom$`Anxiety Level`, symptom$`Cogntive Dysfunction`)
+df1$category <- 'cognitive'
+names(df1) <- c("anxiety", "dysfunction", "category")
+
+df2 <- data.frame(symptom$`Anxiety Level`, symptom$`Emotional dysfunction`)
+df2$category <- 'emotional'
+names(df2) <- c("anxiety", "dysfunction", "category")
+
+df3 <- data.frame(symptom$`Anxiety Level`, symptom$`Physical Dysfunction`)
+df3$category <- 'physical'
+names(df3) <- c("anxiety", "dysfunction", "category")
+
+df4 <- data.frame(symptom$`Anxiety Level`, symptom$`Physiological dysfunction`)
+df4$category <- 'physiological'
+names(df4) <- c("anxiety", "dysfunction", "category")
+
+df5 <- data.frame(symptom$`Anxiety Level`, symptom$`Behavioral Dysfunction`)
+df5$category <- 'behavioral'
+names(df5) <- c("anxiety", "dysfunction", "category")
+
+df6 <- data.frame(symptom$`Anxiety Level`, symptom$`Miscellaneous dysfunction`)
+df6$category <- 'miscellaneous'
+names(df6) <- c("anxiety", "dysfunction", "category")
+
+symptoms <- rbind(df1, df2, df3, df4, df5, df6)
+
+View(symptoms)
+
+#Plotting all symptoms against each other
+breakdown<- symptoms %>% ggplot(aes(dysfunction, fill = category)) + geom_histogram(alpha = 0.2, bins = 7) 
+
+breakdown #view symptom breakdown
+
+#Plotting symptoms based on anxiety level
+anxiety_all <- symptoms %>% ggplot(aes(dysfunction, fill = category)) + facet_wrap(~anxiety) + geom_histogram(alpha = 0.2, bins = 7) 
+anxiety_low <- symptoms %>% filter(anxiety == c(1,2,3,4)) %>% ggplot(aes(dysfunction, fill = category)) + geom_histogram(alpha = 0.2, bins = 7) 
+anxiety_med <- symptoms %>% filter(anxiety == c(5)) %>% ggplot(aes(dysfunction, fill = category)) + geom_histogram(alpha = 0.2, bins = 7) 
+anxiety_high <- symptoms %>% filter(anxiety == c(6,7)) %>% ggplot(aes(dysfunction, fill = category)) + geom_histogram(alpha = 0.2, bins = 7) 
+
+anxiety_all
+anxiety_low
+anxiety_med
+anxiety_high
